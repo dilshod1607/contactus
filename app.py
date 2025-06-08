@@ -1,10 +1,15 @@
 from aiogram import executor
+import os
+
+
 
 from loader import dp, db
 import middlewares, filters, handlers
 from utils.notify_admins import on_startup_notify
 from utils.set_bot_commands import set_default_commands
+port = int(os.environ.get("PORT", 5000))
 
+app.run(host='0.0.0.0', port=port)
 
 async def on_startup(dispatcher):
     await set_default_commands(dispatcher)
