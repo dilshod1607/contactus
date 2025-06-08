@@ -6,9 +6,3 @@ CHANNELS = [
 ]
 
 NOT_SUB_MESSAGE = "Quyidagi kanalga obuna bo'ling!"
-
-WEBHOOK_HOST = "https://chatbot-xoti.onrender.com"
-WEBHOOK_PATH = "/webhook"  # Bu Telegram uchun webhook endpoint, o'zingiz xohlagancha nom berishingiz mumkin
-WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
-WEBAPP_HOST = "0.0.0.0"
-WEBAPP_PORT = 8080
