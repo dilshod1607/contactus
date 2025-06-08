@@ -1,19 +1,30 @@
 from aiogram import executor
-
+from data.config import BOT_TOKEN
 from flask import Flask
 import os
 
 app = Flask(__name__)
 
-@app.route('/')
-def home():
-    return 'Hello from Render!'
+@app.route('/', methods=['POST'])  # <-- MUHIM: POST method ruxsat berilgan
+def webhook():
+    data = request.get_json()
+    print("Telegramdan kelgan:", data)
 
-# PORT muhit o‘zgaruvchisini olish
-port = int(os.environ.get("PORT", 5000))
+    if "message" in data:
+        chat_id = data["message"]["chat"]["id"]
+        text = data["message"]["text"]
 
-# Appni ishga tushirish
-app.run(host='0.0.0.0', port=port)
+        reply = f"You said: {text}"
+
+        url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+        payload = {
+            "chat_id": chat_id,
+            "text": reply
+        }
+
+        requests.post(url, json=payload)
+
+    return 'ok', 200
 
 from loader import dp, db
 import middlewares, filters, handlers
