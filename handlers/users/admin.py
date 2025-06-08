@@ -94,7 +94,7 @@ async def admin_bot_statics(call: types.CallbackQuery):
     except:
         block = 0
 
-    start_bot = dt.date(year=2023, month=11, day=29)
+    start_bot = dt.date(year=2025, month=6, day=7)
     today_bot = dt.date.today()
 
     await text.edit_text(text=f"<b>📊 Bot statistikasi</b>\n\n"
