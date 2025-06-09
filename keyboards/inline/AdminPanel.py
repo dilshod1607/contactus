@@ -8,7 +8,6 @@ AdminPanel = InlineKeyboardMarkup(
             InlineKeyboardButton(text="📊 Bot statistikasi", callback_data='admin:bot_statics'),
         ],
         [
-            InlineKeyboardButton(text="🔗 ID dan referal olish", callback_data="get_ref_by_id"),
             InlineKeyboardButton(text="🗄 Bazani yuklash", callback_data='admin:download_base')
         ]
     ]
