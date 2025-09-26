@@ -1,20 +1,21 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
-import os
 
 app = Flask(__name__)
+
+# Faqat sizning frontend domeningizga ruxsat beramiz (xavfsizlik uchun)
 CORS(app, resources={r"/send": {"origins": "https://bmsm-17.vercel.app"}})
 
-# Token va chat_id ni .env dan olish
-BOT_TOKEN = os.getenv("BOT_TOKEN", "bu_yerga_fallback_token")
-CHAT_ID = os.getenv("CHAT_ID", "bu_yerga_fallback_chatid")
+# 🔹 Bot sozlamalari
+BOT_TOKEN = "8354949877:AAE49hf4h3COf9AAzbFPgAKAxF9pZIAHlZc"
+CHAT_ID = "5391341271"
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def home():
-    return "API ishlayapti ✅"
+    return "✅ Contact Us API ishlayapti!"
 
-@app.route("/send", methods=["POST"])
+@app.route('/send', methods=['POST'])
 def send_message():
     try:
         data = request.get_json()
@@ -23,6 +24,9 @@ def send_message():
         phone = data.get("phone")
         email = data.get("email")
         message = data.get("message")
+
+        if not fio or not phone or not email or not message:
+            return jsonify({"status": "error", "message": "Barcha maydonlarni to‘ldiring!"}), 400
 
         text = f"""
 📝 Yangi murojaat keldi:
@@ -35,14 +39,18 @@ def send_message():
         url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
         payload = {"chat_id": CHAT_ID, "text": text}
 
-        r = requests.post(url, data=payload)
+        r = requests.post(url, json=payload)
+        print("Telegram javobi:", r.text)  # 🔹 Debug uchun log
 
         if r.status_code == 200:
             return jsonify({"status": "success", "message": "Xabar yuborildi!"})
         else:
-            return jsonify({"status": "error", "message": "Telegram API xato"}), 500
+            return jsonify({"status": "error", "message": f"Telegram API xato: {r.text}"}), 500
+
     except Exception as e:
+        print("Xato:", str(e))  # 🔹 Debug uchun log
         return jsonify({"status": "error", "message": str(e)}), 500
 
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
