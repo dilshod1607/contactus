@@ -1,18 +1,43 @@
-from aiogram import executor
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import requests
 
-from loader import dp
-import middlewares, filters, handlers
-from utils.notify_admins import on_startup_notify
-from utils.set_bot_commands import set_default_commands
+app = Flask(__name__)
+# Faqat sizning domeningizga ruxsat beramiz (xavfsizlik uchun)
+CORS(app, resources={r"/send": {"origins": "https://bmsm-17.vercel.app"}})
 
+BOT_TOKEN = "BOT_TOKEN_HERE"      # 🔹 Bu yerga bot tokeningizni yozasiz
+CHAT_ID = "ADMIN_CHAT_ID"         # 🔹 Bu yerga adminning chat_id sini yozasiz
 
-async def on_startup(dispatcher):
-    # Устанавливаем дефолтные команды
-    await set_default_commands(dispatcher)
+@app.route('/send', methods=['POST'])
+def send_message():
+    try:
+        data = request.get_json()
 
-    # Уведомляет про запуск
-    await on_startup_notify(dispatcher)
+        fio = data.get("fio")
+        phone = data.get("phone")
+        email = data.get("email")
+        message = data.get("message")
 
+        text = f"""
+📝 Yangi murojaat keldi:
+👤 F.I.O: {fio}
+📞 Telefon: {phone}
+📧 Email: {email}
+💬 Xabar: {message}
+"""
 
-if __name__ == '__main__':
-    executor.start_polling(dp, on_startup=on_startup)
+        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+        payload = {"chat_id": CHAT_ID, "text": text}
+
+        r = requests.post(url, json=payload)
+
+        if r.status_code == 200:
+            return jsonify({"status": "success", "message": "Xabar yuborildi!"})
+        else:
+            return jsonify({"status": "error", "message": "Telegram API xato"}), 500
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
