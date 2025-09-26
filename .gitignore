@@ -129,3 +129,14 @@ dmypy.json
 .pyre/
 .idea/*
 .env
+*.db
+*.docx
+__pycache__/
+handlers/
+keyboards/
+states/
+utils/
+data/
+venv/
+Pipfile
+Pipfile.lock
