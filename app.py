@@ -6,8 +6,8 @@ app = Flask(__name__)
 # Faqat sizning domeningizga ruxsat beramiz (xavfsizlik uchun)
 CORS(app, resources={r"/send": {"origins": "https://bmsm-17.vercel.app"}})
 
-BOT_TOKEN = "BOT_TOKEN_HERE"      # 🔹 Bu yerga bot tokeningizni yozasiz
-CHAT_ID = "ADMIN_CHAT_ID"         # 🔹 Bu yerga adminning chat_id sini yozasiz
+BOT_TOKEN = "8354949877:AAE49hf4h3COf9AAzbFPgAKAxF9pZIAHlZc"      # 🔹 Bu yerga bot tokeningizni yozasiz
+CHAT_ID = "5391341271"         # 🔹 Bu yerga adminning chat_id sini yozasiz
 
 @app.route('/send', methods=['POST'])
 def send_message():
