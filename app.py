@@ -1,15 +1,20 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
+import os
 
 app = Flask(__name__)
-# Faqat sizning domeningizga ruxsat beramiz (xavfsizlik uchun)
 CORS(app, resources={r"/send": {"origins": "https://bmsm-17.vercel.app"}})
 
-BOT_TOKEN = "8354949877:AAE49hf4h3COf9AAzbFPgAKAxF9pZIAHlZc"      # 🔹 Bu yerga bot tokeningizni yozasiz
-CHAT_ID = "5391341271"         # 🔹 Bu yerga adminning chat_id sini yozasiz
+# Token va chat_id ni .env dan olish
+BOT_TOKEN = os.getenv("BOT_TOKEN", "bu_yerga_fallback_token")
+CHAT_ID = os.getenv("CHAT_ID", "bu_yerga_fallback_chatid")
 
-@app.route('/send', methods=['POST'])
+@app.route("/")
+def home():
+    return "API ishlayapti ✅"
+
+@app.route("/send", methods=["POST"])
 def send_message():
     try:
         data = request.get_json()
@@ -30,7 +35,7 @@ def send_message():
         url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
         payload = {"chat_id": CHAT_ID, "text": text}
 
-        r = requests.post(url, json=payload)
+        r = requests.post(url, data=payload)
 
         if r.status_code == 200:
             return jsonify({"status": "success", "message": "Xabar yuborildi!"})
