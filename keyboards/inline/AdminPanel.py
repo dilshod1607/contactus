@@ -4,11 +4,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 SuperAdminPanel = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text="📤 Xabar yuborish", callback_data='admin:send_message'),
-            InlineKeyboardButton(text="📊 Bot statistikasi", callback_data='admin:bot_statics'),
-        ],
-        [
-            InlineKeyboardButton(text="ID orqali malumot olish", callback_data="get_ref_by_id"),
+            InlineKeyboardButton(text="📋 Murojaatlar", callback_data='admin:murojatlar'),
             InlineKeyboardButton(text="🗄 Bazani yuklash", callback_data='admin:download_base')
         ],
         [
@@ -21,8 +17,8 @@ SuperAdminPanel = InlineKeyboardMarkup(
 AdminPanel = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text="📤 Xabar yuborish", callback_data='admin:send_message'),
-            InlineKeyboardButton(text="📊 Bot statistikasi", callback_data='admin:bot_statics'),
+            InlineKeyboardButton(text="📋 Murojaatlar", callback_data='admin:murojatlar'),
+            InlineKeyboardButton(text="🗄 Bazani yuklash", callback_data='admin:download_base')
         ]
     ]
 )
@@ -49,6 +45,14 @@ GoBack = InlineKeyboardMarkup(
     ],
 )
 
+GoBackmu = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text="◀️ Ortga", callback_data='GoBackmu')
+        ],
+    ],
+)
+
 BaseType = InlineKeyboardMarkup(
     inline_keyboard=[
         [
@@ -60,3 +64,20 @@ BaseType = InlineKeyboardMarkup(
         ]
     ],
 )
+
+
+def build_request_message(requests):
+    text = "📬 <b>Murojaatlar:</b>\n\n"
+    markup = InlineKeyboardMarkup(row_width=2)
+
+    for r in requests:
+        # short info
+        text += f"{r['id']}. {r['fio']} – {r['phone']} – {r['status']}\n"
+
+        # tugmalar
+        markup.add(
+            InlineKeyboardButton("Ko‘rish", callback_data=f"view_{r['id']}"),
+            InlineKeyboardButton("Yopish", callback_data=f"close_{r['id']}")
+        )
+
+    return text, markup

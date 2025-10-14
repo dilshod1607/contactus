@@ -1,11 +1,5 @@
 import asyncio
 import os
-
-# import uuid
-
-from datetime import datetime
-import datetime as dt
-import pytz
 import xlsxwriter as xl
 
 from aiogram import types
@@ -15,27 +9,135 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from data.config import ADMINS
 from loader import bot, db, dp
-from keyboards.inline.AdminPanel import SuperAdminPanel, AdminPanel, GoBack, BaseType, admins_keyboard
-from states.Admin_States import SendMessage, RefState
+from keyboards.inline.AdminPanel import (SuperAdminPanel, AdminPanel, GoBack, BaseType, admins_keyboard,
+                                         build_request_message)
+from states.Admin_States import RefState
+
+all_admins = db.select_all_admins()
 
 
-@dp.message_handler(Command("admin", prefixes="!./"))
+@dp.message_handler(Command("start", prefixes="!./"))
 async def admin_panel(message: types.Message):
     super_admin_id = db.select_super()
-    all_admins = db.select_all_admins()
+    all_admin = db.select_all_admins()
     if message.from_user.id == super_admin_id:
         await message.answer(
-            text=f"<b>Assalomu alaykum xurmatli {message.from_user.get_mention()}</b>\n\n"
-                 f"😊 Bugun nimalarni o'zgartiramiz?",
+            text=f"<b>Assalomu alaykum xurmatli {message.from_user.get_mention()}</b>\n\n",
             reply_markup=SuperAdminPanel
         )
-    elif message.from_user.id in all_admins:
+    elif message.from_user.id in all_admin:
         # Oddiy admin panel
         await message.answer(
-            text=f"🔑 <b>Assalomu alaykum Admin {message.from_user.get_mention()}</b>\n\n"
-                 f"Siz uchun mavjud bo‘lgan imkoniyatlar:",
+            text=f"🔑 <b>Assalomu alaykum Admin {message.from_user.get_mention()}</b>\n\n",
             reply_markup=AdminPanel
         )
+    print("Start bosdi:", message.from_user.id)
+
+
+@dp.callback_query_handler(lambda c: c.data == "admin:murojatlar")
+async def show_all_requests(callback_query: types.CallbackQuery):
+    super_admin_id = db.select_super()
+    is_super_admin = (callback_query.from_user.id == super_admin_id)
+
+    # super admin = hamma yozuvlar (closed ham)
+    # oddiy admin = faqat new va viewed
+    requests = db.select_all_requests(include_closed=False)
+
+    if not requests:
+        return await callback_query.message.answer("📭 Hech qanday murojaat yo‘q.")
+
+    # Callback tugmasini yopib qo'yamiz
+    await callback_query.answer()
+
+    # Har bir murojaatni alohida yuboramiz
+    for r in requests:
+        text = f"""
+👤 F.I.O: {r['fio']}
+📞 Telefon: {r['phone']}
+📧 Email: {r['email']}
+💬 Xabar: {r['message']}
+📌 Status: {r['status']}
+"""
+        markup = InlineKeyboardMarkup(row_width=2)
+        markup.add(
+            InlineKeyboardButton("Ko‘rish", callback_data=f"view_{r['id']}"),
+            InlineKeyboardButton("Yopish", callback_data=f"close_{r['id']}")
+        )
+
+        await bot.send_message(
+            chat_id=callback_query.message.chat.id,
+            text=text,
+            reply_markup=markup
+        )
+
+
+async def new_request_handler(fio, phone, email, message, req_id):
+    text = f"""
+📝 <b>Yangi murojaat keldi</b>:
+👤 F.I.O: {fio}
+📞 Telefon: {phone}
+📧 Email: {email}
+💬 Xabar: {message}
+📌 Status: new
+"""
+
+    # Inline tugmalar — req_id ga bog'langan
+    markup = InlineKeyboardMarkup(row_width=2)
+    markup.add(
+        InlineKeyboardButton("👁 Ko‘rish", callback_data=f"view_{req_id}"),
+        InlineKeyboardButton("❌ Yopish", callback_data=f"close_{req_id}")
+    )
+
+    all_admins = db.select_all_admins()
+    print("Adminlar:", all_admins)
+
+    for admin_id in all_admins:
+        try:
+            await bot.send_message(admin_id, text, reply_markup=markup, parse_mode="HTML")
+            print(f"✅ {admin_id} ga yuborildi (req_id={req_id})")
+        except Exception as e:
+            print(f"❌ {admin_id} ga yuborishda xato (req_id={req_id}): {e}")
+
+
+@dp.callback_query_handler(lambda c: c.data and c.data.startswith(("view_", "close_")))
+async def process_request_callback(callback_query: types.CallbackQuery):
+    action, req_id = callback_query.data.split("_")
+    req_id = int(req_id)
+
+    # Bitta murojaatni ID bo‘yicha olish
+    request = db.select_request_by_id(req_id)
+    if not request:
+        return await callback_query.answer("❌ Murojaat topilmadi!", show_alert=True)
+
+    if action == "view":
+        # Statusni yangilash
+        db.update_request_status(req_id, "viewed")
+        text = f"""
+👤 F.I.O: {request['fio']}
+📞 Telefon: {request['phone']}
+📧 Email: {request['email']}
+💬 Xabar: {request['message']}
+📌 Status: viewed
+"""
+        await bot.edit_message_text(
+            text=text,
+            chat_id=callback_query.message.chat.id,
+            message_id=callback_query.message.message_id,
+            reply_markup=callback_query.message.reply_markup,
+            parse_mode="HTML"
+        )
+        await callback_query.answer("Murojaat ko‘rildi ✅")
+
+    elif action == "close":
+        # Statusni yangilash
+        db.update_request_status(req_id, "closed")
+
+        # Xabarni o‘chirish
+        await bot.delete_message(
+            chat_id=callback_query.message.chat.id,
+            message_id=callback_query.message.message_id
+        )
+        await callback_query.answer("Murojaat yopildi va o‘chirildi ✅")
 
 
 @dp.callback_query_handler(text='GoBack', state='*')
@@ -47,8 +149,7 @@ async def GoToPanel(call: types.CallbackQuery, state: FSMContext):
     if call.from_user.id == super_admin_id:
         await call.answer()
         await call.message.edit_text(
-            text=f"👑 <b>Assalomu alaykum Super Admin {call.from_user.get_mention()}</b>\n\n"
-                 f"😊 Bugun nimalarni o‘zgartiramiz?",
+            text=f"👑 <b>Assalomu alaykum {call.from_user.get_mention()}</b>\n\n",
             reply_markup=SuperAdminPanel
         )
     elif call.from_user.id in all_admins:
@@ -62,76 +163,27 @@ async def GoToPanel(call: types.CallbackQuery, state: FSMContext):
         await call.answer("⛔ Sizga ruxsat yo‘q", show_alert=True)
 
 
-@dp.callback_query_handler(text="admin:send_message")
-async def send_message(call: types.CallbackQuery):
-    await call.message.edit_text(
-        text="<b>😉 Ajoyib!, kerakli xabarni yuboring</b>",
-        reply_markup=GoBack,
-    )
-    await SendMessage.text.set()
-
-
-@dp.message_handler(state=SendMessage.text, content_types=types.ContentType.ANY)
-async def Send_Message(message: types.Message, state: FSMContext):
-    await state.finish()
-
-    users = db.select_all_users()
-    count = db.count_users()[0]
-    x = 0
-    y = 0
-
-    start_ads = datetime.now(pytz.timezone('Asia/Tashkent'))
-    text = await message.answer(f"<b>📨 Xabar qabul qilindi</b>\n\n"
-                                f"<b>📄 Turi:</b> Oddiy xabar\n"
-                                f"<b>📤 Yuborilishi kerak:</b> {count} ta\n"
-                                f"<b>⏰ Boshlandi:</b> {start_ads.strftime('%d/%m/%Y  %H:%M:%S')}"
-                                )
-    for user in users:
-        try:
-            await bot.copy_message(chat_id=user[0],
-                                   from_chat_id=message.from_user.id,
-                                   message_id=message.message_id,
-                                   )
-            x += 1
-        except:
-            y += 1
-        await asyncio.sleep(0.05)
-
-    finish_ads = datetime.now(pytz.timezone('Asia/Tashkent'))
-    db.update_active(active=x)
-    db.update_block(block=y)
-    await text.edit_text(text=f"<b>📨 Xabar yuborilishi yakunlandi</b>\n\n"
-                              f"<b>📤 Yuborildi:</b> {x}/{x + y} ta\n"
-                              f"<b>⏰ Boshlandi:</b> {start_ads.strftime('%d/%m/%Y  %H:%M:%S')}\n"
-                              f"<b>⏰ Yakunlandi:</b> {finish_ads.strftime('%d/%m/%Y  %H:%M:%S')}\n"
-                              f"<b>🕓 Umumiy ketgan vaqt:</b> {(finish_ads - start_ads).seconds} soniya",
-                         reply_markup=GoBack)
-
-
-@dp.callback_query_handler(text="admin:bot_statics")
-async def admin_bot_statics(call: types.CallbackQuery):
-    text = await call.message.edit_text("<b>📊 Bot statistikasi yuklanmoqda...</b>")
-    try:
-        active = db.select_active()[0]
-    except:
-        active = 0
-    try:
-        block = db.select_block()[0]
-    except:
-        block = 0
-
-    start_bot = dt.date(year=2023, month=11, day=29)
-    today_bot = dt.date.today()
-
-    await text.edit_text(text=f"<b>📊 Bot statistikasi</b>\n\n"
-                              f"<b>✅ Aktiv:</b> {active} ta\n"
-                              f"<b>❌ Blok:</b> {block} ta\n"
-                              f"<b>🔰 Umumiy:</b> {active + block} ta\n"
-                              f"➖➖➖➖➖➖➖➖\n"
-                              f"<b>⏸ Bot ishga tushgan:</b> {start_bot.strftime('%d/%m/%Y')}\n"
-                              f"<b>📆 Bugun:</b> {today_bot.strftime('%d/%m/%Y')}\n"
-                              f"<b>📆 Bot ishga tushganiga:</b> {(today_bot - start_bot).days} kun bo'ldi",
-                         reply_markup=GoBack)
+# @dp.callback_query_handler(text='GoBackmu', state='*')
+# async def GoToPanel(call: types.CallbackQuery, state: FSMContext):
+#     await state.finish()
+#     super_admin_id = db.select_super()
+#     all_admins = db.select_all_admins()
+#
+#     if call.from_user.id == super_admin_id:
+#         await call.answer()
+#         await call.message.edit_text(
+#             text=f"👑 <b>Assalomu alaykum {call.from_user.get_mention()}</b>\n\n",
+#             reply_markup=b
+#         )
+#     elif call.from_user.id in all_admins:
+#         await call.answer()
+#         await call.message.edit_text(
+#             text=f"🔑 <b>Assalomu alaykum Admin {call.from_user.get_mention()}</b>\n\n"
+#                  f"Siz uchun mavjud bo‘lgan imkoniyatlar:",
+#             reply_markup=AdminPanel
+#         )
+#     else:
+#         await call.answer("⛔ Sizga ruxsat yo‘q", show_alert=True)
 
 
 @dp.callback_query_handler(text="admin:qoshish", state='*')
@@ -155,7 +207,6 @@ async def addadmin(call: types.CallbackQuery):
         reply_markup=admins_keyboard(admins_to_show)
     )
     await RefState.admin_id.set()
-
 
 
 # --- Yangi admin qo‘shish ---
@@ -210,7 +261,6 @@ async def delete_admin_handler(call: types.CallbackQuery):
         await call.message.edit_reply_markup(reply_markup=kb)
 
 
-
 @dp.callback_query_handler(text='admin:download_base')
 async def save_base(call: types.CallbackQuery):
     await call.message.edit_text(
@@ -243,7 +293,7 @@ async def dot_xlsx(call: types.CallbackQuery):
     worksheet.write('B1', 'Fullname', bold_format)
     worksheet.write('C1', 'Username', bold_format)
     worksheet.write('D1', 'Uuid', bold_format)
-    worksheet = workbook.add_worksheet("Users")
+
     rowIndex = 2
     for user in users:
         user_id = user[0]
@@ -261,43 +311,5 @@ async def dot_xlsx(call: types.CallbackQuery):
     await call.message.answer_document(
         document=file,
         caption="<b>users.xlsx</b>\n\n"
-                "Excel formatida baza yuklandi",)
+                "Excel formatida baza yuklandi", )
     os.remove(path="users.xlsx")
-
-
-@dp.callback_query_handler(text="get_ref_by_id")
-async def ask_for_user_id(call: types.CallbackQuery):
-    await call.message.edit_text("Foydalanuvchi ID sini yuboring (raqam ko‘rinishida):", reply_markup=GoBack)
-    await RefState.waiting_for_user_id.set()
-
-
-@dp.message_handler(state=RefState.waiting_for_user_id)
-async def show_referral_stats(message: types.Message, state: FSMContext):
-    try:
-        target_id = int(message.text)
-        uuid = db.get_user_uuid(target_id)
-
-        if not uuid:
-            await message.answer("Bu foydalanuvchi uchun UUID topilmadi.")
-            await state.finish()
-            return
-
-        referral_count = db.count_referral_senders(uuid)
-        referral_users = db.get_referral_senders(uuid)
-
-        text = (
-            f"👤 Foydalanuvchi ID: {target_id}\n"
-            f"🔗 Referal havola: https://t.me/deptestdeploybot?start={uuid}\n"
-            f"📥 Murojaat qilganlar soni: {referral_count}\n\n"
-        )
-
-        if referral_users:
-            text += "👥 Murojaat qilganlar IDlari:\n"
-            text += "\n".join(str(uid) for uid in referral_users)
-        else:
-            text += "👥 Murojaat qilgan foydalanuvchilar yo‘q."
-
-        await message.answer(text, reply_markup=GoBack)
-    except ValueError:
-        await message.answer("Iltimos, to‘g‘ri ID kiriting (faqat raqam).", reply_markup=GoBack)
-    await state.finish()
