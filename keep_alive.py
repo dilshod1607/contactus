@@ -2,11 +2,13 @@ import os
 import asyncio
 from threading import Thread
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # 🟢 qo‘shildi
 from handlers.users.admin import new_request_handler
 from loader import dp, db
-app = Flask(__name__)
 
-# Bu loop Aiogram polling ishlayotgan loop bo'lishi kerak
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})  # 🟢 barcha domenlarga ruxsat
+
 main_loop = asyncio.get_event_loop()
 
 
@@ -27,10 +29,8 @@ def send_message():
         return jsonify({"status": "error", "message": "Barcha maydonlarni to'ldiring"}), 400
 
     try:
-        # 1) DB ga saqlaymiz va id olamiz
         req_id = db.add_request(fio, phone, email, message)
 
-        # 2) Asinxron tarzda adminlarga yuborish (req_id bilan)
         asyncio.run_coroutine_threadsafe(
             new_request_handler(fio, phone, email, message, req_id),
             main_loop
@@ -48,5 +48,4 @@ def run_flask():
 
 
 def keep_alive():
-    # Flask API alohida thread’da ishga tushadi
     Thread(target=run_flask, daemon=True).start()
