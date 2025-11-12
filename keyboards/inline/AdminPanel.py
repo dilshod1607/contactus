@@ -1,3 +1,4 @@
+from typing import List
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
@@ -24,7 +25,7 @@ AdminPanel = InlineKeyboardMarkup(
 )
 
 
-def admins_keyboard(admins: list[int]):
+def admins_keyboard(admins: List[int]):
     kb = InlineKeyboardMarkup(row_width=2)
     for admin in admins:
         kb.add(

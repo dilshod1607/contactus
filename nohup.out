@@ -1,0 +1,179 @@
+
+_____________________________________________________        
+Executing: 
+
+        CREATE TABLE IF NOT EXISTS Admins (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            admin_id INTEGER NOT NULL UNIQUE
+        );
+_____________________________________________________
+
+
+_____________________________________________________        
+Executing: 
+BEGIN 
+_____________________________________________________
+
+
+_____________________________________________________        
+Executing: 
+
+        INSERT OR IGNORE INTO Admins (id, admin_id)
+        VALUES (1, 5391341271);
+_____________________________________________________
+
+
+_____________________________________________________        
+Executing: 
+COMMIT
+_____________________________________________________
+
+
+_____________________________________________________        
+Executing: 
+
+        CREATE TABLE IF NOT EXISTS Requests (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            fio TEXT NOT NULL,
+            phone TEXT NOT NULL,
+            email TEXT NOT NULL,
+            message TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'new',  -- status: new, viewed, closed
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+_____________________________________________________
+
+
+_____________________________________________________        
+Executing: 
+SELECT admin_id FROM Admins;
+_____________________________________________________
+
+ * Serving Flask app 'keep_alive'
+ * Debug mode: off
+_internal.py [LINE:97] #INFO     [2025-11-11 21:53:39,108]  [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://5.182.26.99:5000
+_internal.py [LINE:97] #INFO     [2025-11-11 21:53:39,108]  [33mPress CTRL+C to quit[0m
+executor.py [LINE:362] #INFO     [2025-11-11 21:53:39,406]  Bot: Contact us [@contaktusbot]
+executor.py [LINE:358] #WARNING  [2025-11-11 21:53:39,623]  Updates were skipped successfully.
+dispatcher.py [LINE:360] #INFO     [2025-11-11 21:53:40,204]  Start polling.
+_internal.py [LINE:97] #INFO     [2025-11-11 21:57:01,264]  213.230.92.6 - - [11/Nov/2025 21:57:01] "POST /send HTTP/1.1" 200 -
+_internal.py [LINE:97] #ERROR    [2025-11-11 21:57:27,416]  198.44.129.227 - - [11/Nov/2025 21:57:27] code 400, message Bad request syntax ('m\x0fÈ|%Xü?6P¾ÿÔ¤2öSû\x1aà;£\x0e©&êW\x11Õ\x9aÇßUTÜYGÌþDçÕ\x08°F\x12b@Õá')
+_internal.py [LINE:97] #INFO     [2025-11-11 21:57:27,416]  198.44.129.227 - - [11/Nov/2025 21:57:27] "[35m[1mm\x0fÈ|%Xü?6P¾ÿÔ¤2öSû\x1aà;£\x0e©&êW\x11Õ\x9aÇßUTÜYGÌþDçÕ\x08°F\x12b@Õá[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #INFO     [2025-11-11 22:07:07,519]  127.0.0.1 - - [11/Nov/2025 22:07:07] "POST /send HTTP/1.0" 200 -
+_internal.py [LINE:97] #INFO     [2025-11-11 22:09:34,934]  127.0.0.1 - - [11/Nov/2025 22:09:34] "POST /send HTTP/1.0" 200 -
+_internal.py [LINE:97] #INFO     [2025-11-11 23:18:12,232]  3.132.23.201 - - [11/Nov/2025 23:18:12] "GET / HTTP/1.1" 200 -
+_internal.py [LINE:97] #INFO     [2025-11-11 23:20:24,513]  3.132.23.201 - - [11/Nov/2025 23:20:24] "GET / HTTP/1.1" 200 -
+_internal.py [LINE:97] #ERROR    [2025-11-11 23:21:58,444]  3.132.23.201 - - [11/Nov/2025 23:21:58] code 400, message Bad request version ('À\x14À')
+_internal.py [LINE:97] #INFO     [2025-11-11 23:21:58,445]  3.132.23.201 - - [11/Nov/2025 23:21:58] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03CtiñÃ"\x8aq({Ü]\x1f¸Ü5\x09"\x99³+Ð}Zs\x1cG\x1e\x88ø\x0fê\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #ERROR    [2025-11-11 23:23:31,723]  3.132.23.201 - - [11/Nov/2025 23:23:31] code 400, message Bad request syntax ('SSH-2.0-Go')
+_internal.py [LINE:97] #INFO     [2025-11-11 23:23:31,723]  3.132.23.201 - - [11/Nov/2025 23:23:31] "[35m[1mSSH-2.0-Go[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #ERROR    [2025-11-11 23:24:52,722]  3.132.23.201 - - [11/Nov/2025 23:24:52] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x00{\x01\x00\x00w\x03\x03(\x10p´Å)HÃg\x16Ìc\x04í\x88Þ÷v\x96(<\x14\x08[zZ(Ìñ*ë\x17\x00\x00\x1aÀ/À+À\x11À\x07À\x13À')
+_internal.py [LINE:97] #INFO     [2025-11-11 23:24:52,722]  3.132.23.201 - - [11/Nov/2025 23:24:52] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03(\x10p´Å)HÃg\x16Ìc\x04í\x88Þ÷v\x96(<\x14\x08[zZ(Ìñ*ë\x17\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #INFO     [2025-11-11 23:25:59,783]  40.124.175.188 - - [11/Nov/2025 23:25:59] "[33mGET /v2/ HTTP/1.1[0m" 404 -
+_internal.py [LINE:97] #ERROR    [2025-11-12 00:04:36,549]  198.44.129.227 - - [12/Nov/2025 00:04:36] code 400, message Bad request syntax ("/ï'&S\x80ë]¦OL\x8e")
+_internal.py [LINE:97] #INFO     [2025-11-12 00:04:36,550]  198.44.129.227 - - [12/Nov/2025 00:04:36] "[35m[1m/ï'&S\x80ë]¦OL\x8e[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #ERROR    [2025-11-12 02:52:26,544]  198.44.129.227 - - [12/Nov/2025 02:52:26] code 400, message Bad request version ('d?\x14\x82r¨\x01û\x05')
+_internal.py [LINE:97] #INFO     [2025-11-12 02:52:26,545]  198.44.129.227 - - [12/Nov/2025 02:52:26] "[35m[1m\x1dÛjþ\x1b/\x82\x1b\x1bh\x0e\x89\x1c®ú0Pã8\x93aHñ\x12/\\$Û¿ÌèD.H¿ÇBZ¤åQÓ\x09Rb\x9fæeèq§¼Ø\x9dÙ\x16Êa\x04ªÐ\x02ª\x07÷ÑF¿«\x11v\x1f\x0e´t\x8c\x99\x15>ÉÐaO#\x97\x1b\x12ù\x87ÿnþS[\x0dÚÍ»;\x03ßÎÖüáÜQÚDY7i`\x97\x1beí#2¡\x8cÈQ\x1a± ;\x91íÜã\x03\x8aÕ\x04\x1b¢\x0d¾\x9d\x18\x1b[<<NÔ\x0f\x98\x99\x99ð^qËH¶ýè[\x19ºÍ\x95\x7fØZ³\x0d d?\x14\x82r¨\x01û\x05[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #ERROR    [2025-11-12 03:13:09,075]  198.44.129.227 - - [12/Nov/2025 03:13:09] code 400, message Bad request version ('\x93\x97\x7f¤P7Å')
+_internal.py [LINE:97] #INFO     [2025-11-12 03:13:09,076]  198.44.129.227 - - [12/Nov/2025 03:13:09] "[35m[1mþ:ÐJmØ\x17òåî\x17öÚ@\x8f-cþ\x00Ø\x9e`¼bv0\x17«n3 ðßý?û\x09\x93\x97\x7f¤P7Å[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #ERROR    [2025-11-12 03:34:42,864]  198.44.129.227 - - [12/Nov/2025 03:34:42] code 400, message Bad request version ('Ö-\x98ÎË')
+_internal.py [LINE:97] #INFO     [2025-11-12 03:34:42,864]  198.44.129.227 - - [12/Nov/2025 03:34:42] "[35m[1mG[\x0e5tô\x02  \\lYó\x84p} Ö-\x98ÎË[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #ERROR    [2025-11-12 03:59:54,100]  167.94.138.201 - - [12/Nov/2025 03:59:54] code 400, message Bad request syntax ('\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x13ë{Wós3,\x819öRï\x1a')
+_internal.py [LINE:97] #INFO     [2025-11-12 03:59:54,100]  167.94.138.201 - - [12/Nov/2025 03:59:54] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x13ë{Wós3,\x819öRï\x1a[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #INFO     [2025-11-12 03:59:57,708]  167.94.138.201 - - [12/Nov/2025 03:59:57] "GET / HTTP/1.1" 200 -
+_internal.py [LINE:97] #ERROR    [2025-11-12 03:59:59,142]  167.94.138.201 - - [12/Nov/2025 03:59:59] code 505, message Invalid HTTP version (2.0)
+_internal.py [LINE:97] #INFO     [2025-11-12 03:59:59,143]  167.94.138.201 - - [12/Nov/2025 03:59:59] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+_internal.py [LINE:97] #INFO     [2025-11-12 04:00:00,010]  167.94.138.201 - - [12/Nov/2025 04:00:00] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+_internal.py [LINE:97] #ERROR    [2025-11-12 04:00:19,163]  167.94.138.201 - - [12/Nov/2025 04:00:19] code 400, message Bad request version ('À\x14À')
+_internal.py [LINE:97] #INFO     [2025-11-12 04:00:19,164]  167.94.138.201 - - [12/Nov/2025 04:00:19] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03ÞÐuo\x9dH\x88¥ö\x0cYì\x9eÈ\x94\x16ºç\x13q¨¹oGpTn2TäZâ í<¾¡·\x89u\x12`ÜF2?z¤ÕtT7Uý@í'\x06¤âÿ\x8b3\x90G\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #INFO     [2025-11-12 04:00:20,922]  167.94.138.201 - - [12/Nov/2025 04:00:20] "[33mGET /wiki HTTP/1.1[0m" 404 -
+_internal.py [LINE:97] #ERROR    [2025-11-12 04:08:12,069]  162.142.125.196 - - [12/Nov/2025 04:08:12] code 400, message Bad request version ('û?\x15KMñÓ¹ÐùÁ\x88ûÌÛï÷\x11')
+_internal.py [LINE:97] #INFO     [2025-11-12 04:08:12,069]  162.142.125.196 - - [12/Nov/2025 04:08:12] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x11Ö¦ü|N\x1bfð\x91é\x0br\x95ÐPU^'\x11\x10â3-I;ê\x86\x10,$H û?\x15KMñÓ¹ÐùÁ\x88ûÌÛï÷\x11[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #INFO     [2025-11-12 04:08:13,341]  162.142.125.196 - - [12/Nov/2025 04:08:13] "GET / HTTP/1.1" 200 -
+_internal.py [LINE:97] #ERROR    [2025-11-12 04:08:14,448]  162.142.125.196 - - [12/Nov/2025 04:08:14] code 505, message Invalid HTTP version (2.0)
+_internal.py [LINE:97] #INFO     [2025-11-12 04:08:14,448]  162.142.125.196 - - [12/Nov/2025 04:08:14] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+_internal.py [LINE:97] #INFO     [2025-11-12 04:08:20,351]  162.142.125.196 - - [12/Nov/2025 04:08:20] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+_internal.py [LINE:97] #ERROR    [2025-11-12 04:08:26,673]  162.142.125.196 - - [12/Nov/2025 04:08:26] code 400, message Bad request syntax ('\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03í°8')
+_internal.py [LINE:97] #INFO     [2025-11-12 04:08:26,673]  162.142.125.196 - - [12/Nov/2025 04:08:26] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03í°8[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #INFO     [2025-11-12 04:08:28,556]  162.142.125.196 - - [12/Nov/2025 04:08:28] "[33mGET /wiki HTTP/1.1[0m" 404 -
+_internal.py [LINE:97] #ERROR    [2025-11-12 04:10:27,761]  198.44.129.227 - - [12/Nov/2025 04:10:27] code 400, message Bad request version ('ø=¹\x00É)ëtÂ÷6î)òÂ;kÕÍgè\x02»J×\x9e\x8bË')
+_internal.py [LINE:97] #INFO     [2025-11-12 04:10:27,762]  198.44.129.227 - - [12/Nov/2025 04:10:27] "[35m[1möqä\x09# Ð\x1e\x13PWÎ\x84}n-uXx®»Î\x83\x15P»ø À4qòÕ\x82·2¶\x8f*\x17wEÅ£-ÁeK­²ÅH%\\ëÑZM?\x83¡óPªv\x9eBÿóp\x0f\x95Wè0Ü½%\x87Õá\x08oùò\x05ka\x16+ì\x0cÓHÔ0m!ß}J\x02\x8eíé.F(aë\x02\x15Ü/»nç/÷N*\x88\x01»£§fì\x86¦\x97,\x09è\x1f\x165º*\x8e\x1fø=¹\x00É)ëtÂ÷6î)òÂ;kÕÍgè\x02»J×\x9e\x8bË[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #ERROR    [2025-11-12 05:39:05,797]  198.44.129.227 - - [12/Nov/2025 05:39:05] code 400, message Bad request version ('ôÎä#!¢àîz\x04\x93ÜH£s')
+_internal.py [LINE:97] #INFO     [2025-11-12 05:39:05,798]  198.44.129.227 - - [12/Nov/2025 05:39:05] "[35m[1m\x7f8¯v¡°eD\x96\x16N\x942\x8cýH¿\x1då\x9bJðT3IÖÙc\x0dôÎä#!¢àîz\x04\x93ÜH£s[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #ERROR    [2025-11-12 06:06:39,270]  198.44.129.227 - - [12/Nov/2025 06:06:39] code 400, message Bad request syntax ('ç\x07÷,1')
+_internal.py [LINE:97] #INFO     [2025-11-12 06:06:39,271]  198.44.129.227 - - [12/Nov/2025 06:06:39] "[35m[1mç\x07÷,1[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #ERROR    [2025-11-12 06:42:47,064]  198.44.129.227 - - [12/Nov/2025 06:42:47] code 400, message Bad request version ('r')
+_internal.py [LINE:97] #INFO     [2025-11-12 06:42:47,064]  198.44.129.227 - - [12/Nov/2025 06:42:47] "[35m[1mµ&\x0cJ\x07À×\x801\x97Ð\x06ÀOêl\x90'Dò\x93"-h\x8aÙäpò1<\x11øÅ\x07@»µh\x13â\x9e\x02µ\x7fÏ\x93ájk¡¢pÊ7"·Å(£qâ\x1báÐm=r\x82\x0c\x81S?µÐ\x89\x90¿$\x15\x13c\x8e\x05ò¿Ô\x1c¶Ô«ÆiÕgON\x91\x0d\x10¡\x13iA©+Ì¦*)Ø%\x1d4W$oL35\x7fûvyÝ\x83$\x93ÐXËÆ¬8ðo¬Âï²\x93\x09lÕ\x85çe`<\x92\x8c¾/8Ô\x02\x9bH\x91kWåÛ°B}C\\ÜÔú¶¸/\x81GºoY\x8b¸\x1f\\E\x83å÷\x90\x1c\x18\x8cª²?\x923\x07¾AÁùxÚU\x1f\x9e!-ûo\x1fº\x11 r[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #INFO     [2025-11-12 06:46:06,957]  147.185.132.33 - - [12/Nov/2025 06:46:06] "GET / HTTP/1.1" 200 -
+_internal.py [LINE:97] #INFO     [2025-11-12 07:02:51,324]  64.62.156.192 - - [12/Nov/2025 07:02:51] "GET / HTTP/1.1" 200 -
+_internal.py [LINE:97] #INFO     [2025-11-12 07:03:04,960]  64.62.156.198 - - [12/Nov/2025 07:03:04] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+_internal.py [LINE:97] #ERROR    [2025-11-12 07:17:37,686]  198.44.129.227 - - [12/Nov/2025 07:17:37] code 400, message Bad request version ('Ê\x9az¯_u,+l\x0eiÃ×')
+_internal.py [LINE:97] #INFO     [2025-11-12 07:17:37,686]  198.44.129.227 - - [12/Nov/2025 07:17:37] "[35m[1mr¾W\x1b AðDwöb%;\x0cÊ\x9az¯_u,+l\x0eiÃ×[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #ERROR    [2025-11-12 07:32:37,271]  198.44.129.227 - - [12/Nov/2025 07:32:37] code 400, message Bad request version ('v:pvÖéRD\x8bÂ6brÈ\x82ÐÇõ¢HÃOpu¶âGÓê\x07Ö<\x89\x02JXG®ÕÝ\x9c')
+_internal.py [LINE:97] #INFO     [2025-11-12 07:32:37,272]  198.44.129.227 - - [12/Nov/2025 07:32:37] "[35m[1m×g0Ñ\x96¸\x82el1§k²p»\x89\x07«é\x1c°&\x02\x1ew\x9b)N\x89\x8cO\x1f ±\x8d\x94uIáÈ\x1f±5\x15¸½\x9có}¨õR³\x10ø¥ÃþË>\x98Þ\x15\x88\x9a\x07ËåÎóÌªlfAòó+z\x81Ü]òD\x09v:pvÖéRD\x8bÂ6brÈ\x82ÐÇõ¢HÃOpu¶âGÓê\x07Ö<\x89\x02JXG®ÕÝ\x9c[0m" HTTPStatus.BAD_REQUEST -
+_internal.py [LINE:97] #ERROR    [2025-11-12 07:49:04,029]  198.44.129.227 - - [12/Nov/2025 07:49:04] code 400, message Bad request version ('ÌÚÄ¨Í´÷ªÀ·ªp|hþ@ÃÔÊYðÉ\x90gÕ]\x88`\x06Þ\xadKm5ÛLJDi\x94\x9bÑtÝ\x12Àcæ\xadæòì\x8aÁJf\x9düßs®KE\x95åm³\x88\x1a8\x08\x04VDö}g¦')
+_internal.py [LINE:97] #INFO     [2025-11-12 07:49:04,030]  198.44.129.227 - - [12/Nov/2025 07:49:04] "[35m[1m\x16\x80ú\x81\x81\x9c\x9a7Bä\x1d\x00Ð\x88sÕa«ëM\x05b\x18h\x04\x8e¶5üxÖô\x81\x88·K?\x04\x1f\x11(òJZÞ\x11 ÌÚÄ¨Í´÷ªÀ·ªp|hþ@ÃÔÊYðÉ\x90gÕ]\x88`\x06Þ­Km5ÛLJDi\x94\x9bÑtÝ\x12Àcæ­æòì\x8aÁJf\x9düßs®KE\x95åm³\x88\x1a8\x08\x04VDö}g¦[0m" HTTPStatus.BAD_REQUEST -
+
+_____________________________________________________        
+Executing: 
+
+        CREATE TABLE IF NOT EXISTS Admins (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            admin_id INTEGER NOT NULL UNIQUE
+        );
+_____________________________________________________
+
+
+_____________________________________________________        
+Executing: 
+BEGIN 
+_____________________________________________________
+
+
+_____________________________________________________        
+Executing: 
+
+        INSERT OR IGNORE INTO Admins (id, admin_id)
+        VALUES (1, 5391341271);
+_____________________________________________________
+
+
+_____________________________________________________        
+Executing: 
+COMMIT
+_____________________________________________________
+
+
+_____________________________________________________        
+Executing: 
+
+        CREATE TABLE IF NOT EXISTS Requests (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            fio TEXT NOT NULL,
+            phone TEXT NOT NULL,
+            email TEXT NOT NULL,
+            message TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'new',  -- status: new, viewed, closed
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+_____________________________________________________
+
+
+_____________________________________________________        
+Executing: 
+SELECT admin_id FROM Admins;
+_____________________________________________________
+
+ * Serving Flask app 'keep_alive'
+ * Debug mode: off
+_internal.py [LINE:97] #INFO     [2025-11-12 10:22:05,599]  [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://5.182.26.99:5000
+_internal.py [LINE:97] #INFO     [2025-11-12 10:22:05,600]  [33mPress CTRL+C to quit[0m
+executor.py [LINE:362] #INFO     [2025-11-12 10:22:05,914]  Bot: Contact us [@contaktusbot]
+executor.py [LINE:358] #WARNING  [2025-11-12 10:22:07,116]  Updates were skipped successfully.
+dispatcher.py [LINE:360] #INFO     [2025-11-12 10:22:07,554]  Start polling.
