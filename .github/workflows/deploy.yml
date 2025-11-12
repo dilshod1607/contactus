@@ -8,12 +8,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Deploy to VPS via SSH
+      - name: Run deploy script on VPS
         uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -21,20 +20,11 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
           script: |
-            # Papkaga o'tish
             cd /opt/tgbot/contactus
-            
-            # Oldingi ishga tushgan botni to'xtatish
             pm2 stop contactus-bot || true
             pm2 delete contactus-bot || true
-
-            # GitHubdan so'nggi kodni olish
             git fetch origin main
             git reset --hard origin/main
-
-            # Python dependencies o'rnatish
             pip install --no-cache-dir -r requirements.txt
-
-            # Botni PM2 bilan ishga tushirish
             pm2 start "python3 app.py" --name contactus-bot
             pm2 save
