@@ -1,16 +1,16 @@
-name: Deploy Contactus Bot
+name: Deploy ContactUs Bot
 
 on:
   push:
     branches:
-      - main
+      - main  # yoki deploy qilmoqchi bo'lgan branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Run deploy script on VPS
@@ -21,11 +21,14 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
           script: |
+            # PM2 to'liq yo'lini o'zgartirish kerak
+            PM2_BIN="/root/.nvm/versions/node/v20.19.5/bin/pm2"
+            
             cd /opt/tgbot/contactus
-            pm2 stop contactus-bot || true
-            pm2 delete contactus-bot || true
+            $PM2_BIN stop contactus-bot || true
+            $PM2_BIN delete contactus-bot || true
             git fetch origin main
             git reset --hard origin/main
             pip install --no-cache-dir -r requirements.txt
-            pm2 start "python3 app.py" --name contactus-bot
-            pm2 save
+            $PM2_BIN start "python3 app.py" --name contactus-bot
+            $PM2_BIN save
