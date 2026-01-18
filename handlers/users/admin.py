@@ -239,7 +239,7 @@ async def delete_admin_handler(call: types.CallbackQuery):
     if deleted:
         await call.answer("✅ Admin o‘chirildi", show_alert=True)
     else:
-        return await call.answer("❌ Super adminni o‘chirish mumkin emas!", show_alert=True)
+        return await call.answer("❌ Super adminni ochirish mumkin emas!", show_alert=True)
 
     # Yangilangan ro‘yxatni qayta chiqaramiz
     super_admin = db.select_super()
