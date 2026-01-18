@@ -3,7 +3,7 @@ name: Deploy ContactUs Bot
 on:
   push:
     branches:
-      - main  # yoki deploy qilmoqchi bo'lgan branch
+      - main
 
 jobs:
   deploy:
@@ -14,21 +14,29 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Run deploy script on VPS
-        uses: appleboy/ssh-action@v0.1.6
+        uses: appleboy/ssh-action@v1.0.3  # Oxirgi barqaror versiyaga yangilandi
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
           script: |
-            # PM2 to'liq yo'lini o'zgartirish kerak
-            PM2_BIN="/root/.nvm/versions/node/v20.19.5/bin/pm2"
+            # 1. Muhitni yuklash (PM2 va Python yo'llarini topish uchun)
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             
+            # 2. Loyiha papkasiga o'tish
             cd /opt/tgbot/contactus
-            $PM2_BIN stop contactus-bot || true
-            $PM2_BIN delete contactus-bot || true
+
+            # 3. Kodni yangilash
             git fetch origin main
             git reset --hard origin/main
+
+            # 4. Kutubxonalarni yangilash
             pip install --no-cache-dir -r requirements.txt
-            $PM2_BIN start "python3 app.py" --name contactus-bot
-            $PM2_BIN save
+
+            # 5. PM2 orqali botni qayta ishga tushirish
+            # --interpreter orqali python3 ni ko'rsatish eng xavfsiz yo'l
+            pm2 delete contactus-bot || true
+            pm2 start app.py --name contactus-bot --interpreter python3
+            pm2 save
